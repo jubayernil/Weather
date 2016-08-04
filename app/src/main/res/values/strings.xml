@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Abohaoya</string>
+    <string name="c">C</string>
+    <string name="f">F</string>
 </resources>
