@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp"
+    android:weightSum="30"
+    android:background="@drawable/sky_background"
     tools:context=".Activity.MainActivity">
 
     <LinearLayout
@@ -14,69 +16,123 @@
         android:padding="5dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_weight="3"
+        android:layout_height="0dp">
         <TextView
+            android:textColor="@color/colorWhite"
             android:id="@+id/cityNameTextView"
             android:layout_gravity="center"
-            android:padding="5dp"
+            android:padding="2dp"
             android:textSize="30sp"
-            android:hint="City Name"
             android:layout_weight="3"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-        <ToggleButton
-            android:padding="5dp"
-            android:gravity="center"
-            android:textSize="30sp"
-            android:background="@color/colorLightBlue"
-            android:id="@+id/temtogglebutton"
+            android:layout_height="match_parent" />
+        <LinearLayout
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textOn="@string/f"
-            android:textOff="@string/c"
-            android:onClick="onToggleClicked"/>
+            android:layout_height="wrap_content">
+            <ToggleButton
+                android:textColor="@color/colorWhite"
+                android:padding="5dp"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:background="@android:color/transparent"
+                android:id="@+id/temtogglebutton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textOn="@string/f"
+                android:textOff="@string/c"
+                android:onClick="onToggleClicked"/>
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="3"
+        android:layout_height="0dp">
+        <Spinner
+            android:background="@color/colorWhite"
+            android:id="@+id/cityNameSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
     <LinearLayout
         android:padding="5dp"
         android:orientation="horizontal"
-        android:weightSum="4"
+        android:weightSum="6"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/tempTextView"
-            android:textStyle="bold"
-            android:textSize="120sp"
-            android:hint="29"
-            android:layout_weight="1.5"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+        android:layout_weight="9"
+        android:layout_height="0dp">
         <LinearLayout
-            android:layout_gravity="right"
-            android:weightSum="2"
-            android:orientation="vertical"
-            android:layout_weight="0.5"
+            android:layout_weight="4"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <TextView
-                android:id="@+id/degreeTextView"
+                android:textColorHint="@color/colorWhite"
+                android:hint="26"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/tempTextView"
                 android:textStyle="bold"
-                android:textSize="30sp"
-                android:hint="."
-                android:gravity="center"
+                android:textSize="120sp"
+                android:layout_weight="2"
+                android:layout_width="0dp"
+                android:layout_marginRight="-50dp"
+                android:layout_height="match_parent" />
+            <LinearLayout
+                android:layout_gravity="right"
+                android:orientation="vertical"
                 android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp" />
-            <TextView
-                android:id="@+id/celciusFahrenheitTextView"
-                android:textStyle="bold"
-                android:textSize="30sp"
-                android:hint="C"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp" />
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+                <Space
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" />
+                <Space
+                    android:layout_weight="0.5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" />
+                <TextView
+                    android:textColor="@color/colorWhite"
+                    android:id="@+id/degreeTextView"
+                    android:hint="'"
+                    android:textColorHint="@color/colorWhite"
+                    android:textStyle="bold"
+                    android:textSize="50sp"
+                    android:gravity="center"
+                    android:layout_weight="1.5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" />
+                <Space
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" />
+                <Space
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" />
+                <TextView
+                    android:textColor="@color/colorWhite"
+                    android:id="@+id/celciusFahrenheitTextView"
+                    android:hint="C"
+                    android:textColorHint="@color/colorWhite"
+                    android:textStyle="bold"
+                    android:textSize="25sp"
+                    android:gravity="center"
+                    android:layout_weight="1.5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" />
+                <Space
+                    android:layout_weight="0.5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" />
+                <Space
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp" />
+            </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:gravity="right"
             android:layout_weight="2"
@@ -85,10 +141,58 @@
             <ImageView
                 android:id="@+id/skyImageView"
                 android:scaleType="fitXY"
-                android:src="@drawable/image"
-                android:layout_width="150dp"
-                android:layout_height="150dp" />
+                android:src="@drawable/cloudicon16"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_weight="4"
+        android:layout_height="0dp">
+        <TextView
+            android:textStyle="bold"
+            android:textColorHint="@color/colorWhite"
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:id="@+id/todayMaxMinTempTextView"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textStyle="bold"
+                android:hint="Rain"
+                android:textColorHint="@color/colorWhite"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:id="@+id/weatherSummaryTextView"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp" />
+            <TextView
+                android:textStyle="bold"
+                android:hint="Rain Rain Rain Rain Rain Rain "
+                android:textColorHint="@color/colorWhite"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:id="@+id/weatherDetailTextView"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_weight="11"
+        android:layout_height="0dp">
+
     </LinearLayout>
 
 </LinearLayout>

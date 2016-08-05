@@ -7,15 +7,24 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.compiler.abohaoya.Adapter.CityAdapter;
 import com.compiler.abohaoya.R;
+import com.compiler.abohaoya.model.City;
 import com.compiler.abohaoya.pojo.CurrentWeatherResponse;
 import com.compiler.abohaoya.service.Constant;
 import com.compiler.abohaoya.service.CurrentWeatherServiceApi;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +40,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView tempTextView;
     private TextView degreeTextView;
     private TextView celciusFahrenheitTextView;
+    private TextView todayMaxMinTempTextView;
+    private TextView weatherSummaryTextView;
+    private TextView weatherDetailTextView;
     private ImageView skyImageView;
+
+    ToggleButton temtogglebutton;
+
+    Spinner cityNameSpinner;
+    CityAdapter cityAdapter;
+    City city;
+    ArrayList<City> cities;
 
     private CurrentWeatherServiceApi currentWeatherServiceApi;
 
@@ -42,15 +61,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        cityNameSpinner = (Spinner) findViewById(R.id.cityNameSpinner);
+
+        city = new City();
+        cities = city.getAllCity();
+        cityAdapter = new CityAdapter(this, cities);
+        cityNameSpinner.setAdapter(cityAdapter);
+
         //temperatureTextView = (TextView) findViewById(R.id.temperatureTextView);
         //cityNameEditText = (EditText) findViewById(R.id.cityNameEditText);
         cityNameTextView = (TextView) findViewById(R.id.cityNameTextView);
         tempTextView = (TextView) findViewById(R.id.tempTextView);
         degreeTextView = (TextView) findViewById(R.id.degreeTextView);
         celciusFahrenheitTextView = (TextView) findViewById(R.id.celciusFahrenheitTextView);
+        todayMaxMinTempTextView = (TextView) findViewById(R.id.todayMaxMinTempTextView);
+        weatherSummaryTextView = (TextView) findViewById(R.id.weatherSummaryTextView);
+        weatherDetailTextView = (TextView) findViewById(R.id.weatherDetailTextView);
         skyImageView = (ImageView) findViewById(R.id.skyImageView);
+        temtogglebutton = (ToggleButton) findViewById(R.id.temtogglebutton);
 
-        cityName = "Dhaka";
+        temtogglebutton.setTextOff((char) 0x00B0+"C");
+        temtogglebutton.setTextOn((char) 0x00B0+"F");
+        temtogglebutton.setText((char) 0x00B0+"C");
+
+        cityNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                //Toast.makeText(CityActivity.this, ""+adapterView.getItemAtPosition(i).toString(), Toast.LENGTH_SHORT).show();
+                cityName = cities.get(i).getCityName();
+                cityNameTextView.setText(cityName);
+                getCurrentWeatherData();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         networkLibraryInitialize();
         getCurrentWeatherData();
@@ -63,23 +111,39 @@ public class MainActivity extends AppCompatActivity {
             @TargetApi(Build.VERSION_CODES.N)
             @Override
             public void onResponse(Call<CurrentWeatherResponse> call, Response<CurrentWeatherResponse> response) {
-                CurrentWeatherResponse currentWeatherResponse = response.body();
-                /*double celcius = currentWeatherResponse.getMain().getTemp() - 273.16;
-                NumberFormat numberFormat = NumberFormat.getInstance();
-                numberFormat.setMaximumFractionDigits(2);
-                String sCelcius = numberFormat.format(celcius);*/
-                //temperatureTextView.setText(sCelcius);
+                final CurrentWeatherResponse currentWeatherResponse = response.body();
 
-                cityNameTextView.setText(currentWeatherResponse.getName());
-                int temp = (int) Math.ceil(currentWeatherResponse.getMain().getTemp()- 273.16);
-                tempTextView.setText(String.valueOf(temp));
+                tempTextView.setText(convertToCelsius(currentWeatherResponse.getMain().getTemp()));
                 degreeTextView.setText(""+(char) 0x00B0);
                 celciusFahrenheitTextView.setText("C");
+                todayMaxMinTempTextView.setText("Today "+convertToCelsius(currentWeatherResponse.getMain().getTempMax())+(char) 0x00B0+" ~ "+
+                        convertToCelsius(currentWeatherResponse.getMain().getTempMin())+(char) 0x00B0);
+                weatherSummaryTextView.setText(currentWeatherResponse.getWeather().get(0).getMain());
+                weatherDetailTextView.setText(currentWeatherResponse.getWeather().get(0).getDescription());
+                temtogglebutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean on = ((ToggleButton) view).isChecked();
+                        if (on) {
+                            tempTextView.setText(convertToFahrenheit(currentWeatherResponse.getMain().getTemp()));
+                            celciusFahrenheitTextView.setText("F");
+                            todayMaxMinTempTextView.setText("Today "+convertToFahrenheit(currentWeatherResponse.getMain().getTempMax())+(char) 0x00B0+" ~ "+
+                                    convertToFahrenheit(currentWeatherResponse.getMain().getTempMin())+(char) 0x00B0);
+                        } else {
+                            tempTextView.setText(convertToCelsius(currentWeatherResponse.getMain().getTemp()));
+                            celciusFahrenheitTextView.setText("C");
+                            todayMaxMinTempTextView.setText("Today "+convertToCelsius(currentWeatherResponse.getMain().getTempMax())+(char) 0x00B0+" ~ "+
+                                    convertToCelsius(currentWeatherResponse.getMain().getTempMin())+(char) 0x00B0);
+                        }
+                    }
+                });
+                temtogglebutton.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onFailure(Call<CurrentWeatherResponse> call, Throwable t) {
-
+                Toast.makeText(MainActivity.this, "Need Internet Connection", Toast.LENGTH_SHORT).show();
+                temtogglebutton.setVisibility(View.GONE);
             }
         });
     }
@@ -92,26 +156,14 @@ public class MainActivity extends AppCompatActivity {
         currentWeatherServiceApi = retrofit.create(CurrentWeatherServiceApi.class);
     }
 
-    public void onToggleClicked(View view) {
-        // Is the toggle on?
-        boolean on = ((ToggleButton) view).isChecked();
-
-        if (on) {
-            String sTemp = tempTextView.getText().toString();
-            int iTemp = ((Integer.parseInt(sTemp)*9)/5)+32;
-            tempTextView.setText(String.valueOf(iTemp));
-            celciusFahrenheitTextView.setText("F");
-        } else {
-            getCurrentWeatherData();
-        }
+    private String convertToCelsius(double temp){
+        double dTemp = Math.ceil(temp);
+        int iTemp = (int) (dTemp - 273.16);
+        return String.valueOf(iTemp);
     }
-
-    /*public void findTempurature(View view) {
-        if (cityNameEditText.getText().length() == 0){
-            cityNameEditText.setError("City Name Required");
-        } else {
-            cityName = cityNameEditText.getText().toString();
-        }
-        getCurrentWeatherData();
-    }*/
+    private String convertToFahrenheit(double temp){
+        double dTemp = Math.ceil(temp);
+        int iTemp = (int) (dTemp*9/5 - 459.67);
+        return String.valueOf(iTemp);
+    }
 }
